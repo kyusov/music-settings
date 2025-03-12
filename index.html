@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body,
+        input,
+        button {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: #f1f1f1;
+        }
+
+        .section,
+        .header,
+        .knob__body {
+            border: 1px solid black;
+        }
+
+        .section {
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: .5rem;
+        }
+
+        .header {
+            padding: 0 1rem;
+            border-radius: 4px;
+        }
+
+        .knob {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .knob__body {
+            --s: 15px;
+            /* length */
+            --o: 0px;
+            /* offset */
+            --c: black;
+            /* color */
+            --w: 2px;
+            /* thickness*/
+
+            --grad: transparent calc(50% - var(--w)/2),
+                var(--c) calc(50% - var(--w)/2 + 1px) calc(50% + var(--w)/2 - 1px),
+                transparent calc(50% + var(--w)/2);
+
+            margin: calc(var(--s) + var(--o) + 10px);
+            width: 64px;
+            height: 64px;
+            display: inline-block;
+            border: 1px solid balck;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .knob__body::before {
+            content: "";
+            position: absolute;
+            top: calc(-1*var(--s) - var(--o));
+            bottom: calc(-1*var(--s) - var(--o));
+            left: calc(-1*var(--s) - var(--o));
+            right: calc(-1*var(--s) - var(--o));
+            border-radius: inherit;
+            background:
+                /* 8 rays */
+                linear-gradient(0deg, var(--grad)),
+                linear-gradient(30deg, var(--grad)),
+                linear-gradient(60deg, var(--grad)),
+                linear-gradient(90deg, var(--grad)),
+                linear-gradient(120deg, var(--grad)),
+                linear-gradient(150deg, var(--grad)),
+                linear-gradient(180deg, var(--grad)),
+                linear-gradient(210deg, var(--grad)),
+                linear-gradient(240deg, var(--grad)),
+                linear-gradient(270deg, var(--grad)),
+                linear-gradient(300deg, var(--grad)),
+                linear-gradient(330deg, var(--grad));
+
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--s)), #fff calc(100% - var(--s)));
+            mask: radial-gradient(farthest-side, transparent calc(100% - var(--s)), #fff calc(100% - var(--s)));
+        }
+
+        .knob__rate {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+
+            background: conic-gradient(from 180deg, aqua 0%, transparent 0%);
+        }
+
+        .radio {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .radio-group {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            border: 1px solid black;
+            border-radius: 24px;
+        }
+
+        .radio-group label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .radio__labels label svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .radio__labels {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        input[type="radio"] {
+            width: 24px;
+            height: 24px;
+            outline: none;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- <div class="section">
+            <div class="header">
+                <div class="header__title">ARP/SEQ</div>
+            </div>
+
+            <div class="knob">
+                <span id="knob-RATE-value">0</span>
+                <div class="knob__body">
+                    <div class="knob__rate" id="knob-RATE"></div>
+                </div>
+                <div class="knob__name">RATE</div>
+            </div>
+
+            <div class="radio">
+                <div class="radio__labels">
+                    <label>
+                        ARP
+                    </label>
+                    <label>
+                        SEQ
+                    </label>
+                    <label>
+                        REC
+                    </label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" name="mode" value="option1">
+                    <input type="radio" name="mode" value="option2">
+                    <input type="radio" name="mode" value="option3">
+                </div>
+                <div class="radio__title">
+                    MODE
+                </div>
+            </div>
+
+
+            <div class="radio">
+                <div class="radio__labels">
+                    <label>
+                        ORDR
+                        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                            <rect fill="none" height="256" width="256" />
+                            <path
+                                d="M10.1,114.5,99.3,57.2A16,16,0,0,1,124,70.7v42.6l87.3-56.1A16,16,0,0,1,236,70.7V185.3a16.1,16.1,0,0,1-8.3,14.1,16.5,16.5,0,0,1-16.4-.6L124,142.7v42.6a16.1,16.1,0,0,1-8.3,14.1,16.5,16.5,0,0,1-16.4-.6L10.1,141.5a16.1,16.1,0,0,1,0-27Z" />
+                        </svg>
+                    </label>
+                    <label>/</label>
+                    <label>
+                        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                            <rect fill="none" height="256" width="256" />
+                            <path
+                                d="M253.2,128a16,16,0,0,1-7.3,13.5l-89.2,57.3A16,16,0,0,1,132,185.3V142.7L44.7,198.8A16,16,0,0,1,20,185.3V70.7A16,16,0,0,1,44.7,57.2L132,113.3V70.7a16,16,0,0,1,24.7-13.5l89.2,57.3A16,16,0,0,1,253.2,128Z" />
+                        </svg>
+                        RNDM
+                    </label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" name="direction" value="option1">
+                    <input type="radio" name="direction" value="option3">
+                </div>
+                <div class="radio__title">
+                    DIRECTION
+                </div>
+            </div>
+
+            <div class="radio">
+                <div class="radio__labels">
+                    <label>
+                        1
+                    </label>
+                    <label>
+                        2
+                    </label>
+                    <label>
+                        3
+                    </label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" name="octseq" value="option1">
+                    <input type="radio" name="octseq" value="option2">
+                    <input type="radio" name="octseq" value="option3">
+                </div>
+                <div class="radio__title">
+                    OCT / SEQ
+                </div>
+            </div>
+
+            <div class="knob">
+                <span id="knob-GLIDE-value">0</span>
+                <div class="knob__body">
+                    <div class="knob__rate" id="knob-GLIDE"></div>
+                </div>
+                <div class="knob__name">GLIDE</div>
+            </div>
+        </div> -->
+    </div>
+
+    <script>
+        const presets = new Map([
+            ['MODEL 15', {
+                sections: [{
+                    name: 'ARP / SEQ',
+                    details: {
+                        knobs: [{ name: 'RATE', value: 50 }, { name: 'GLIDE', value: 30 }],
+                        inputs: [{
+                            name: 'MODE',
+                            radios: [{ name: 'ARP', value: false }, { name: 'SEQ', value: false }, { name: 'REC', value: false }]
+                        },
+                        {
+                            name: 'DIRECTION',
+                            radios: [{
+                                name: `ORDR
+                        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                            <rect fill="none" height="256" width="256" />
+                            <path
+                                d="M10.1,114.5,99.3,57.2A16,16,0,0,1,124,70.7v42.6l87.3-56.1A16,16,0,0,1,236,70.7V185.3a16.1,16.1,0,0,1-8.3,14.1,16.5,16.5,0,0,1-16.4-.6L124,142.7v42.6a16.1,16.1,0,0,1-8.3,14.1,16.5,16.5,0,0,1-16.4-.6L10.1,141.5a16.1,16.1,0,0,1,0-27Z" />
+                        </svg>`,
+                                value: false
+                            }]
+                        },
+                        {
+                            name: 'OCT / SEQ',
+                            radios: [{ name: '1', value: false }, { name: '2', value: false }, { name: '3', value: false }]
+                        }
+                        ],
+                    }
+                }]
+
+            }
+            ]
+        ]);
+
+        function createKnob(data) {
+            const knob = document.createElement('div')
+            knob.classList.add('knob')
+
+            const knobValue = document.createElement('span')
+            knobValue.setAttribute('id', `knob-${data.name}-value`)
+            knobValue.textContent = data.value
+
+            const knobBody = document.createElement('div')
+            knobBody.classList.add('knob__body')
+
+            const knobRate = document.createElement('div')
+            knobRate.classList.add('knob__rate')
+            knobRate.setAttribute('id', `knob-${data.name}`)
+
+            const knobName = document.createElement('div')
+            knobName.textContent = data.name
+
+            knobBody.appendChild(knobRate)
+            knob.appendChild(knobValue)
+            knob.appendChild(knobBody)
+            knob.appendChild(knobName)
+
+            knob.addEventListener('mousewheel', function(event) {
+                changeKnobValue.call(knobRate, event, knobValue);
+            });
+
+            setKnobValue(knobRate, knobValue, data.value)
+
+            return knob
+        }
+
+        function applyPreset(preset) {
+            const settings = presets.get(preset);
+            if (settings) {
+                const container = document.querySelector('.container')
+                settings.sections.forEach((el) => {
+                    const section = document.createElement('div')
+                    const sectionHeader = document.createElement('div')
+
+                    sectionHeader.textContent = el.name
+                    section.classList.add('section')
+                    sectionHeader.classList.add('header')
+
+                    const knobs = el.details.knobs.map(createKnob)
+
+
+                    section.appendChild(sectionHeader)
+                    knobs.forEach(knob => section.appendChild(knob))
+                    container.appendChild(section)
+                })
+
+                // <div class="knob">
+                //     <span id="knob-RATE-value">0</span>
+                //     <div class="knob__body">
+                //         <div class="knob__rate" id="knob-RATE"></div>
+                //     </div>
+                //     <div class="knob__name">RATE</div>
+                // </div>
+
+
+
+
+                // knobRate.style.background = `conic-gradient(from 180deg, aqua ${settings.rate}%, transparent 0%)`;
+                // knobRateValue.textContent = settings.rate;
+                // knobGlide.style.background = `conic-gradient(from 180deg, aqua ${settings.glide}%, transparent 0%)`;
+                // knobGlideValue.textContent = settings.glide;
+
+                // document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked = true;
+                // document.querySelector(`input[name="direction"][value="${settings.direction}"]`).checked = true;
+                // document.querySelector(`input[name="octseq"][value="${settings.octseq}"]`).checked = true;
+            }
+        }
+
+        function changeKnobValue(ev, valueElement) {
+            console.log(arguments)
+            const direction = ev.deltaY > 0 ? -1 : 1;
+            const percent = this.style.background.split(',')[1] ? Number(this.style.background.split(',')[1].split(' ')[2].replace('%', '')) : 0;
+            const value = percent + direction > 100 ? 100 : percent + direction < 0 ? 0 : percent + direction; /* from 0 to 100% */
+            this.style.background = `conic-gradient(from 180deg, aqua ${value}%, transparent 0%)`;
+            setKnobValue(this, valueElement, value)
+        }
+
+        function setKnobValue(knob, valueElement, value) {
+            knob.style.background = `conic-gradient(from 180deg, aqua ${value}%, transparent 0%)`;
+            valueElement.textContent = value
+        }
+
+        applyPreset('MODEL 15')
+
+        // const knobRate = document.getElementById('knob-RATE');
+        // const knobGlide = document.getElementById('knob-GLIDE');
+
+        // const knobRateValue = document.getElementById('knob-RATE-value')
+        // const knobGlideValue = document.getElementById('knob-GLIDE-value')
+
+        // knobRate.addEventListener('mousewheel', function (ev) {
+        //     const direction = ev.deltaY > 0 ? -1 : 1;
+        //     const percent = this.style.background.split(',')[1] ? Number(this.style.background.split(',')[1].split(' ')[2].replace('%', '')) : 0;
+        //     const value = percent + direction > 100 ? 100 : percent + direction < 0 ? 0 : percent + direction; /* from 0 to 100% */
+        //     this.style.background = `conic-gradient(from 180deg, aqua ${value}%, transparent 0%)`;
+        //     knobRateValue.textContent = value
+        // });
+
+        // knobGlide.addEventListener('mousewheel', function (ev) {
+        //     const direction = ev.deltaY > 0 ? -1 : 1;
+        //     const percent = this.style.background.split(',')[1] ? Number(this.style.background.split(',')[1].split(' ')[2].replace('%', '')) : 0;
+        //     const value = percent + direction > 100 ? 100 : percent + direction < 0 ? 0 : percent + direction; /* from 0 to 100% */
+        //     this.style.background = `conic-gradient(from 180deg, aqua ${value}%, transparent 0%)`;
+        //     knobGlideValue.textContent = value
+        // });
+    </script>
+</body>
+
+</html>
